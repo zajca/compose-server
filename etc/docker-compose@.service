@@ -6,7 +6,7 @@ After=docker.service
 [Service]
 Restart=always
 
-WorkingDirectory=/srv/git/lair-docker-compose/%i
+WorkingDirectory=/home/khadas/.config/srv/git/docker/%i
 
 # Remove old containers, images and volumes
 ExecStartPre=/usr/local/bin/docker-compose down --volumes
