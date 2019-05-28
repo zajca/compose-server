@@ -1,0 +1,8 @@
+scrape_configs:
+  - job_name: 'node'
+    static_configs:
+      - targets:
+        - 'mazikeen.lair.doismellburning.co.uk:9100'
+        - 'nox.lair.doismellburning.co.uk:9100'
+        - 'porta.lair.doismellburning.co.uk:9100'
+        - 'clavicula.lair.doismellburning.co.uk:9100'
