@@ -1,0 +1,144 @@
+version: "3"
+
+networks:
+  proxy:
+    external: true
+
+services:
+  # plex:
+  #   container_name: plex
+  #   image: plexinc/pms-docker
+  #   ports:
+  #     - 32400:32400/tcp
+  #     # - 3005:3005/tcp
+  #     # - 8324:8324/tcp
+  #     - 32469:32469/tcp
+  #     - 1900:1900/udp
+  #     - 32410:32410/udp
+  #     - 32412:32412/udp
+  #     - 32413:32413/udp
+  #     - 32414:32414/udp
+  #   networks:
+  #     - proxy
+  #   volumes:
+  #     - ${DATA_DIR}/config/plex:/config
+  #     - ${DATA_DIR}/transcode:/transcode
+  #     - ${DATA_DIR}/content:/data
+  #   environment:
+  #     TZ: ${TZ}
+  #     VERSION: latest
+  #     PLEX_CLAIM: ${PLEX_CLAIM}
+  #     VIRTUAL_PORT: 32400
+  #     ADVERTISE_IP: http://plex.${DOMAIN}:32400
+  #   labels:
+  #     traefik.frontend.rule: "Host:plex.${DOMAIN}"
+  #     traefik.port: 32400
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr
+    # ports:
+    #   - 7878:7878/tcp
+    networks:
+      - proxy
+    volumes:
+      - ${DATA_DIR}/config/radarr:/config
+      - ${DATA_DIR}/downloads:/downloads
+      - ${DATA_DIR}/content/movies:/movies
+    environment:
+      TZ: ${TZ}
+    labels:
+      traefik.frontend.rule: "Host:radarr.${DOMAIN}"
+      traefik.port: 7878
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr
+    networks:
+      - proxy
+    # ports:
+    #   - 8989:8989/tcp
+    volumes:
+      - ${DATA_DIR}/config/sonarr:/config
+      - ${DATA_DIR}/downloads:/downloads
+      - ${DATA_DIR}/content/tv:/tv
+    environment:
+      TZ: ${TZ}
+    labels:
+      traefik.frontend.rule: "Host:sonarr.${DOMAIN}"
+      traefik.port: 8989
+  transmission:
+    container_name: transmission
+    image: linuxserver/transmission
+    ports:
+      - 9091:9091/tcp
+      - 51413:51413/tcp
+    volumes:
+      - ${DATA_DIR}/config/transmission:/config
+      - ${DATA_DIR}/downloads:/downloads
+      - ${DATA_DIR}/watch:/watch
+    environment:
+      TZ: ${TZ}
+    labels:
+      traefik.frontend.rule: "Host:torrent.${DOMAIN}"
+      traefik.port: 9091
+  jackett:
+    image: linuxserver/jackett
+    container_name: jackett
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${DATA_DIR}/config/jackett:/config
+      - ${DATA_DIR}/downloads:/downloads
+    ports:
+      - 9117:9117
+    labels:
+      traefik.frontend.rule: "Host:jackett.${DOMAIN}"
+      traefik.port: 9117
+  bazarr:
+    image: linuxserver/bazarr
+    container_name: bazarr
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - ${DATA_DIR}/config/bazarr:/config
+      - ${DATA_DIR}/content/movies:/movies
+      - ${DATA_DIR}/content/tv:/tv
+    ports:
+      - 6767:6767
+    labels:
+      traefik.frontend.rule: "Host:bazarr.${DOMAIN}"
+      traefik.port: 6767
+  # rygel:
+  #   image: linuxconfig/rygel
+  #   container_name: rygel
+  #   environment:
+  #     TZ: ${TZ}
+  #   volumes:
+  #     - ${DATA_DIR}/config/bazarr:/config
+  #     - ${DATA_DIR}/content/movies:/video/movies
+  #     - ${DATA_DIR}/content/tv:/video/tv
+  #     - ${DATA_DIR}/content/music:/music
+  #     - ${DATA_DIR}/content/pictures:/pictures
+  #   ports:
+  #     - 6887:6887/tcp
+  #     - 1900:1900/udp
+  #   labels:
+  #     traefik.frontend.rule: "Host:rygel.${DOMAIN}"
+  ums:
+    image: mbentley/ums
+    container_name: ums
+    environment:
+      TZ: ${TZ}
+    volumes:
+      # - ${DATA_DIR}/config/ums/UMS.conf:/opt/ums/UMS.conf
+      # - ${DATA_DIR}/config/ums/UMS.cred:/opt/ums/UMS.cred
+      - ${DATA_DIR}/config/ums/database:/opt/ums/database
+      - ${DATA_DIR}/config/ums/data:/opt/ums/data
+      - ${DATA_DIR}/content:/media
+    ports:
+      - 2869:2869/tcp
+      - 5001:5001/tcp
+      - 9001:9001/tcp
+      - 1900:1900/udp
+    labels:
+      traefik.frontend.rule: "Host:ums.${DOMAIN}"
+      traefik.port: 9001

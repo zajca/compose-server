@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 networks:
   proxy:
@@ -6,7 +6,7 @@ networks:
 
 services:
   smokeping:
-    image: linuxserver/smokeping:131
+    image: linuxserver/smokeping
     networks:
       - proxy
     volumes:

@@ -1,0 +1,17 @@
+version: "3"
+
+networks:
+  proxy:
+    external: true
+
+services:
+  nextcloud:
+    image: nextcloud
+    networks:
+      - proxy
+    volumes:
+      - /srv/nextcloud:/var/www/html
+      - /srv/data:/var/www/html/data
+    labels:
+      traefik.frontend.rule: "Host:cloud.vsecko.doma"
+      traefik.port: 80

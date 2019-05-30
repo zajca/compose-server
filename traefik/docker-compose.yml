@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 networks:
   proxy:
@@ -6,7 +6,7 @@ networks:
 
 services:
   traefik:
-    image: traefik:1.7.7
+    image: traefik
     networks:
       - proxy
     ports:
