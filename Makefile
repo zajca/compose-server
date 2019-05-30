@@ -13,4 +13,3 @@ install:
 	systemctl enable docker-compose@smokeping
 	systemctl enable docker-compose@nextcloud
 	systemctl enable docker-compose@pirates
-	systemctl enable docker-compose@pirates
