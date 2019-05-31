@@ -11,26 +11,30 @@ services:
       - ${DATA_DIR}/config/nextcloud/postgres:/var/lib/postgresql/data
     env_file:
       - .env
-  nextcloud:
+  app:
     image: nextcloud:fpm-alpine
     volumes:
       - ${DATA_DIR}/config/nextcloud:/var/www/html
       - ${DATA_DIR}/content:/var/www/html/data
     environment:
       - POSTGRES_HOST=db
+    links:
+      - db
     env_file:
       - .env
     depends_on:
       - db
-  nextcloud_web:
+  proxy:
     build: ./web
     volumes:
       - ${DATA_DIR}/config/nextcloud:/var/www/html:ro
       - ${DATA_DIR}/content:/var/www/html/data:ro
     environment:
       - VIRTUAL_HOST=cloud.${DOMAIN}
+    links:
+      - app
     depends_on:
-      - nextcloud
+      - app
     networks:
       - proxy
     labels:
