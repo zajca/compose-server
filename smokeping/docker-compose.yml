@@ -15,3 +15,4 @@ services:
       traefik.backend: "smokeping"
       traefik.port: 80
       traefik.frontend.rule: "Host:smokeping.vsecko.doma"
+      traefik.docker.network: proxy

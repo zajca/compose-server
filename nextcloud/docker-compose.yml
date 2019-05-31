@@ -41,3 +41,4 @@ services:
     labels:
       traefik.frontend.rule: "Host:cloud.${DOMAIN}"
       traefik.port: 80
+      traefik.docker.network: proxy
