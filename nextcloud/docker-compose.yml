@@ -37,6 +37,7 @@ services:
       - app
     networks:
       - proxy
+      - default
     labels:
       traefik.frontend.rule: "Host:cloud.${DOMAIN}"
       traefik.port: 80
