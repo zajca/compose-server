@@ -65,21 +65,36 @@ services:
     labels:
       traefik.frontend.rule: "Host:sonarr.${DOMAIN}"
       traefik.port: 8989
-  transmission:
-    container_name: transmission
-    image: linuxserver/transmission
-    ports:
-      - 9091:9091/tcp
-      - 51413:51413/tcp
-    volumes:
-      - ${DATA_DIR}/config/transmission:/config
-      - ${DATA_DIR}/downloads:/downloads
-      - ${DATA_DIR}/watch:/watch
+  # transmission:
+  #   container_name: transmission
+  #   image: linuxserver/transmission
+  #   ports:
+  #     - 9091:9091/tcp
+  #     - 51413:51413/tcp
+  #   volumes:
+  #     - ${DATA_DIR}/config/transmission:/config
+  #     - ${DATA_DIR}/downloads:/downloads
+  #     - ${DATA_DIR}/watch:/watch
+  #   environment:
+  #     TZ: ${TZ}
+  #   labels:
+  #     traefik.frontend.rule: "Host:torrent.${DOMAIN}"
+  #     traefik.port: 9091
+  deluge:
+    image: linuxserver/deluge
+    container_name: deluge
     environment:
       TZ: ${TZ}
+    ports:
+      - 8112:8112/tcp
+      - 58846:58846/tcp
+      - 58846:58846/udp
+    volumes:
+      - ${DATA_DIR}/config/deluge:/config
+      - ${DATA_DIR}/config/downloads:/downloads
     labels:
       traefik.frontend.rule: "Host:torrent.${DOMAIN}"
-      traefik.port: 9091
+      traefik.port: 8112
   jackett:
     image: linuxserver/jackett
     container_name: jackett
