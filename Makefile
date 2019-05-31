@@ -13,3 +13,20 @@ install:
 	systemctl enable docker-compose@smokeping
 	systemctl enable docker-compose@nextcloud
 	systemctl enable docker-compose@pirates
+	systemctl enable docker-compose@folder
+
+.PHONY: start
+start:
+	systemctl start docker-compose@traefik
+	systemctl start docker-compose@smokeping
+	systemctl start docker-compose@nextcloud
+	systemctl start docker-compose@pirates
+	systemctl start docker-compose@folder
+
+.PHONY: restart
+restart:
+	systemctl restart docker-compose@traefik
+	systemctl restart docker-compose@smokeping
+	systemctl restart docker-compose@nextcloud
+	systemctl restart docker-compose@pirates
+	systemctl restart docker-compose@folder

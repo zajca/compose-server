@@ -1,0 +1,48 @@
+version: "3.2"
+
+networks:
+  proxy:
+    external: true
+
+services:
+  # fm:
+  #   image: filebrowser/filebrowser
+  #   networks:
+  #     - proxy
+  #   volumes:
+  #     - ${DATA_DIR}/content:/srv
+  #     - type: bind
+  #       source: ${DATA_DIR}/config/filebrowser/database.db
+  #       target: /database.db
+  #     - type: bind
+  #       source: ${DATA_DIR}/config/filebrowser/.filebrowser.json
+  #       target: /.filebrowser.json
+  #   env_file:
+  #     - .env
+  #   labels:
+  #     traefik.frontend.rule: "Host:fm.${DOMAIN}"
+  #     traefik.port: 80
+  #     traefik.docker.network: proxy
+  samba:
+    image: dperson/samba
+    networks:
+      - proxy
+    ports:
+      - 139:139/tcp
+      - 445:445/udp
+    volumes:
+      - ${DATA_DIR}/content:/mount
+    env_file:
+      - .env
+    labels:
+      traefik.frontend.rule: "Host:samba.${DOMAIN}"
+  serviio:
+    image: riftbit/serviio
+    ports:
+      - "23423:23423/tcp"
+      - "8895:8895/tcp"
+      - "1900:1900/udp"
+    volumes:
+      - /srv/docker/serviio/library:/opt/serviio/library
+      - /srv/docker/serviio/plugins:/opt/serviio/plugins
+      - /srv/docker/serviio/log:/opt/serviio/log
