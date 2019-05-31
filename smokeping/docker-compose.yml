@@ -11,6 +11,8 @@ services:
       - proxy
     volumes:
       - "./config:/config:ro" # ro because the image tries to write there and "fix" permissions and other sadness
+    env_file:
+      - .env
     labels:
       traefik.backend: "smokeping"
       traefik.port: 80

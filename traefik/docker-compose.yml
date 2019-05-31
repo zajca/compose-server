@@ -12,11 +12,13 @@ services:
     ports:
       - 80:80
       - 8080:8080
+    env_file:
+      - .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.toml:/traefik.toml
     command: -c /dev/null --api --docker --docker.domain=vsecko.doma --logLevel=DEBUG
     labels:
-      traefik.frontend.rule: "Host:traefik.vsecko.doma"
+      traefik.frontend.rule: "Host:traefik.${DOMAIN}"
       traefik.port: 8080
       traefik.docker.network: proxy

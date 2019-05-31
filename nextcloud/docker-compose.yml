@@ -11,6 +11,10 @@ services:
       - ${DATA_DIR}/config/nextcloud/postgres:/var/lib/postgresql/data
     env_file:
       - .env
+    networks:
+      - default
+    labels:
+      traefik.enable: false
   app:
     image: nextcloud:fpm-alpine
     volumes:
@@ -20,10 +24,14 @@ services:
       - POSTGRES_HOST=db
     links:
       - db
+    networks:
+      - default
     env_file:
       - .env
     depends_on:
       - db
+    labels:
+      traefik.enable: false
   proxy:
     build: ./web
     volumes:
@@ -35,6 +43,8 @@ services:
       - app
     depends_on:
       - app
+    env_file:
+      - .env
     networks:
       - proxy
       - default
