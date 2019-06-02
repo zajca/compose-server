@@ -1,7 +1,7 @@
 {
     "port": 80,
     "noAuth": false,
-    "baseURL": "/",
+    "baseURL": "/srv",
     "address": "",
     "alternativeReCaptcha": false,
     "reCaptchaKey": "",

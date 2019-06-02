@@ -11,8 +11,10 @@ services:
     networks:
       - proxy
     volumes:
-      - ${DATA_DIR}/content:/srv
+      # - ${DATA_DIR}/content:/srv
       - ${DATA_DIR}/config/filebrowser/db:/db
+      - /mnt/disk1:/srv/disk1
+      - /mnt/disk2:/srv/disk2
     env_file:
       - .env
     labels:
@@ -32,46 +34,47 @@ services:
   #     - .env
   #   labels:
   #     traefik.frontend.rule: "Host:samba.${DOMAIN}"
-  # minidlna:
-  #   container_name: minidlna
-  #   image: vladgh/minidlna
-  #   volumes:
-  #     - "${DATA_DIR}/content:/media1:rw"
-  #   ports:
-  #     - "8201:8201"
-  #   environment:
-  #     MINIDLNA_MEDIA_DIR1: "/media1"
-  #     MINIDLNA_MEDIA_DIR2: "/media2"
-  #     MINIDLNA_FRIENDLY_NAME: "minidlna"
-  #     MINIDLNA_PORT: "8201"
-  #   network_mode: host
-  #   labels:
-  #     traefik.frontend.rule: "Host:dlna.${DOMAIN}"
-  #     traefik.port: 8201
-  #     traefik.docker.network: proxy
-  rygel:
-    image: linuxconfig/rygel
-    container_name: rygel
-    environment:
-      TZ: ${TZ}
-    env_file:
-      - .env
+  minidlna:
+    container_name: minidlna
+    image: forumi0721alpineaarch64/alpine-aarch64-minidlna
     volumes:
-      - ${DATA_DIR}/config/rygel:/config
-      - ${DATA_DIR}/content/movies:/video/movies
-      - ${DATA_DIR}/content/tv:/video/tv
-      - ${DATA_DIR}/content/music:/music
-      - ${DATA_DIR}/content/pictures:/pictures
+      - ${DATA_DIR}/config/minidlna:/conf.d/minidlna
+      - /mnt/disk1:/data/disk1
+      - /mnt/disk2:/data/disk2
     ports:
-      - 6887:6887/tcp
-      - 1900:1900/udp
-    # networks:
-    #   - proxy
+      - "8200:8200"
+    environment:
+      MEDIA_DIR: "/data"
+      FRIENDLY_NAME: "minidlna"
+      PORT: "8200"
     network_mode: host
     labels:
-      traefik.frontend.rule: "Host:rygel.${DOMAIN}"
-      traefik.port: 6887
+      traefik.frontend.rule: "Host:dlna.${DOMAIN}"
+      traefik.port: 8200
       traefik.docker.network: proxy
+  # rygel:
+  #   image: linuxconfig/rygel
+  #   container_name: rygel
+  #   environment:
+  #     TZ: ${TZ}
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ${DATA_DIR}/config/rygel:/config
+  #     - ${DATA_DIR}/content/movies:/video/movies
+  #     - ${DATA_DIR}/content/tv:/video/tv
+  #     - ${DATA_DIR}/content/music:/music
+  #     - ${DATA_DIR}/content/pictures:/pictures
+  #   ports:
+  #     - 6887:6887/tcp
+  #     - 1900:1900/udp
+  #   # networks:
+  #   #   - proxy
+  #   network_mode: host
+  #   labels:
+  #     traefik.frontend.rule: "Host:rygel.${DOMAIN}"
+  #     traefik.port: 6887
+  #     traefik.docker.network: proxy
   # plex:
   #   container_name: plex
   #   image: plexinc/pms-docker
