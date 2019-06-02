@@ -5,44 +5,100 @@ networks:
     external: true
 
 services:
-  # fm:
-  #   image: filebrowser/filebrowser
-  #   networks:
-  #     - proxy
-  #   volumes:
-  #     - ${DATA_DIR}/content:/srv
-  #     - type: bind
-  #       source: ${DATA_DIR}/config/filebrowser/database.db
-  #       target: /database.db
-  #     - type: bind
-  #       source: ${DATA_DIR}/config/filebrowser/.filebrowser.json
-  #       target: /.filebrowser.json
-  #   env_file:
-  #     - .env
-  #   labels:
-  #     traefik.frontend.rule: "Host:fm.${DOMAIN}"
-  #     traefik.port: 80
-  #     traefik.docker.network: proxy
-  samba:
-    image: dperson/samba
+  fm:
+    build:
+      context: ./filemanager
     networks:
       - proxy
-    ports:
-      - 139:139/tcp
-      - 445:445/udp
     volumes:
-      - ${DATA_DIR}/content:/mount
+      - ${DATA_DIR}/content:/srv
+      - ${DATA_DIR}/config/filebrowser/db:/db
     env_file:
       - .env
     labels:
-      traefik.frontend.rule: "Host:samba.${DOMAIN}"
-  serviio:
-    image: riftbit/serviio
-    ports:
-      - "23423:23423/tcp"
-      - "8895:8895/tcp"
-      - "1900:1900/udp"
+      traefik.frontend.rule: "Host:fm.${DOMAIN}"
+      traefik.port: 80
+      traefik.docker.network: proxy
+  # samba:
+  #   image: dperson/samba
+  #   networks:
+  #     - proxy
+  #   ports:
+  #     - 139:139/tcp
+  #     - 445:445/udp
+  #   volumes:
+  #     - ${DATA_DIR}/content:/mount
+  #   env_file:
+  #     - .env
+  #   labels:
+  #     traefik.frontend.rule: "Host:samba.${DOMAIN}"
+  # minidlna:
+  #   container_name: minidlna
+  #   image: vladgh/minidlna
+  #   volumes:
+  #     - "${DATA_DIR}/content:/media1:rw"
+  #   ports:
+  #     - "8201:8201"
+  #   environment:
+  #     MINIDLNA_MEDIA_DIR1: "/media1"
+  #     MINIDLNA_MEDIA_DIR2: "/media2"
+  #     MINIDLNA_FRIENDLY_NAME: "minidlna"
+  #     MINIDLNA_PORT: "8201"
+  #   network_mode: host
+  #   labels:
+  #     traefik.frontend.rule: "Host:dlna.${DOMAIN}"
+  #     traefik.port: 8201
+  #     traefik.docker.network: proxy
+  rygel:
+    image: linuxconfig/rygel
+    container_name: rygel
+    environment:
+      TZ: ${TZ}
+    env_file:
+      - .env
     volumes:
-      - /srv/docker/serviio/library:/opt/serviio/library
-      - /srv/docker/serviio/plugins:/opt/serviio/plugins
-      - /srv/docker/serviio/log:/opt/serviio/log
+      - ${DATA_DIR}/config/rygel:/config
+      - ${DATA_DIR}/content/movies:/video/movies
+      - ${DATA_DIR}/content/tv:/video/tv
+      - ${DATA_DIR}/content/music:/music
+      - ${DATA_DIR}/content/pictures:/pictures
+    ports:
+      - 6887:6887/tcp
+      - 1900:1900/udp
+    # networks:
+    #   - proxy
+    network_mode: host
+    labels:
+      traefik.frontend.rule: "Host:rygel.${DOMAIN}"
+      traefik.port: 6887
+      traefik.docker.network: proxy
+  # plex:
+  #   container_name: plex
+  #   image: plexinc/pms-docker
+  #   ports:
+  #     - 32400:32400/tcp
+  #     # - 3005:3005/tcp
+  #     # - 8324:8324/tcp
+  #     - 32469:32469/tcp
+  #     - 1900:1900/udp
+  #     - 32410:32410/udp
+  #     - 32412:32412/udp
+  #     - 32413:32413/udp
+  #     - 32414:32414/udp
+  #   networks:
+  #     - proxy
+  #     - default
+  #   volumes:
+  #     - ${DATA_DIR}/config/plex:/config
+  #     - ${DATA_DIR}/transcode:/transcode
+  #     - ${DATA_DIR}/content:/data
+  #   environment:
+  #     TZ: ${TZ}
+  #     VERSION: latest
+  #     PLEX_CLAIM: ${PLEX_CLAIM}
+  #     VIRTUAL_PORT: 32400
+  #     ADVERTISE_IP: http://plex.${DOMAIN}:32400
+  #   labels:
+  #     traefik.frontend.rule: "Host:plex.${DOMAIN}"
+  #     traefik.port: 32400
+  #      traefik.docker.network: proxy

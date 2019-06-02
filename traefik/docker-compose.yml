@@ -22,3 +22,20 @@ services:
       traefik.frontend.rule: "Host:traefik.${DOMAIN}"
       traefik.port: 8080
       traefik.docker.network: proxy
+  heimdall:
+    image: linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      TZ: ${TZ}
+    env_file:
+      - .env
+    networks:
+      - proxy
+    volumes:
+      - ${DATA_DIR}/config/heimdall:/config
+    # ports:
+    #   - 80:80
+    labels:
+      traefik.frontend.rule: "Host:${DOMAIN}"
+      traefik.port: 80
+      traefik.docker.network: proxy

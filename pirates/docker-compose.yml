@@ -5,36 +5,6 @@ networks:
     external: true
 
 services:
-  # plex:
-  #   container_name: plex
-  #   image: plexinc/pms-docker
-  #   ports:
-  #     - 32400:32400/tcp
-  #     # - 3005:3005/tcp
-  #     # - 8324:8324/tcp
-  #     - 32469:32469/tcp
-  #     - 1900:1900/udp
-  #     - 32410:32410/udp
-  #     - 32412:32412/udp
-  #     - 32413:32413/udp
-  #     - 32414:32414/udp
-  #   networks:
-  #     - proxy
-  #     - default
-  #   volumes:
-  #     - ${DATA_DIR}/config/plex:/config
-  #     - ${DATA_DIR}/transcode:/transcode
-  #     - ${DATA_DIR}/content:/data
-  #   environment:
-  #     TZ: ${TZ}
-  #     VERSION: latest
-  #     PLEX_CLAIM: ${PLEX_CLAIM}
-  #     VIRTUAL_PORT: 32400
-  #     ADVERTISE_IP: http://plex.${DOMAIN}:32400
-  #   labels:
-  #     traefik.frontend.rule: "Host:plex.${DOMAIN}"
-  #     traefik.port: 32400
-  #      traefik.docker.network: proxy
   radarr:
     container_name: radarr
     image: linuxserver/radarr
@@ -143,45 +113,4 @@ services:
     labels:
       traefik.frontend.rule: "Host:bazarr.${DOMAIN}"
       traefik.port: 6767
-      traefik.docker.network: proxy
-  # rygel:
-  #   image: linuxconfig/rygel
-  #   container_name: rygel
-  #   environment:
-  #     TZ: ${TZ}
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ${DATA_DIR}/config/rygel:/config
-  #     - ${DATA_DIR}/content/movies:/video/movies
-  #     - ${DATA_DIR}/content/tv:/video/tv
-  #     - ${DATA_DIR}/content/music:/music
-  #     - ${DATA_DIR}/content/pictures:/pictures
-  #   networks:
-  #     - proxy
-  #     - default
-  #   ports:
-  #     - 6887:6887/tcp
-  #     - 1900:1900/udp
-  #   labels:
-  #     traefik.frontend.rule: "Host:rygel.${DOMAIN}"
-  #     traefik.port: 6887
-  #     traefik.docker.network: proxy
-  heimdall:
-    image: linuxserver/heimdall
-    container_name: heimdall
-    environment:
-      TZ: ${TZ}
-    env_file:
-      - .env
-    networks:
-      - proxy
-      - default
-    volumes:
-      - ${DATA_DIR}/config/heimdall:/config
-    # ports:
-    #   - 80:80
-    labels:
-      traefik.frontend.rule: "Host:${DOMAIN}"
-      traefik.port: 80
       traefik.docker.network: proxy
