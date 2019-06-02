@@ -34,24 +34,24 @@ services:
   #     - .env
   #   labels:
   #     traefik.frontend.rule: "Host:samba.${DOMAIN}"
-  minidlna:
-    container_name: minidlna
-    image: forumi0721alpineaarch64/alpine-aarch64-minidlna
-    volumes:
-      - ${DATA_DIR}/config/minidlna:/conf.d/minidlna
-      - /mnt/disk1:/data/disk1
-      - /mnt/disk2:/data/disk2
-    ports:
-      - "8200:8200"
-    environment:
-      MEDIA_DIR: "/data"
-      FRIENDLY_NAME: "minidlna"
-      PORT: "8200"
-    network_mode: host
-    labels:
-      traefik.frontend.rule: "Host:dlna.${DOMAIN}"
-      traefik.port: 8200
-      traefik.docker.network: proxy
+  # minidlna:
+  #   container_name: minidlna
+  #   image: forumi0721alpineaarch64/alpine-aarch64-minidlna
+  #   volumes:
+  #     - ${DATA_DIR}/config/minidlna:/conf.d/minidlna
+  #     - /mnt/disk1:/data/disk1
+  #     - /mnt/disk2:/data/disk2
+  #   ports:
+  #     - "8200:8200"
+  #   environment:
+  #     MEDIA_DIR: "/data"
+  #     FRIENDLY_NAME: "minidlna"
+  #     PORT: "8200"
+  #   network_mode: host
+  #   labels:
+  #     traefik.frontend.rule: "Host:dlna.${DOMAIN}"
+  #     traefik.port: 8200
+  #     traefik.docker.network: proxy
   # rygel:
   #   image: linuxconfig/rygel
   #   container_name: rygel
@@ -61,10 +61,12 @@ services:
   #     - .env
   #   volumes:
   #     - ${DATA_DIR}/config/rygel:/config
-  #     - ${DATA_DIR}/content/movies:/video/movies
-  #     - ${DATA_DIR}/content/tv:/video/tv
-  #     - ${DATA_DIR}/content/music:/music
-  #     - ${DATA_DIR}/content/pictures:/pictures
+  #     - /home/zajca/disk/hdd-tb/filmy:/video/movies
+  #     - /home/zajca/disk/hdd-tb/serial:/video/tv
+  #     # - ${DATA_DIR}/content/movies:/video/movies
+  #     # - ${DATA_DIR}/content/tv:/video/tv
+  #     # - ${DATA_DIR}/content/music:/music
+  #     # - ${DATA_DIR}/content/pictures:/pictures
   #   ports:
   #     - 6887:6887/tcp
   #     - 1900:1900/udp
@@ -75,33 +77,34 @@ services:
   #     traefik.frontend.rule: "Host:rygel.${DOMAIN}"
   #     traefik.port: 6887
   #     traefik.docker.network: proxy
-  # plex:
-  #   container_name: plex
-  #   image: plexinc/pms-docker
-  #   ports:
-  #     - 32400:32400/tcp
-  #     # - 3005:3005/tcp
-  #     # - 8324:8324/tcp
-  #     - 32469:32469/tcp
-  #     - 1900:1900/udp
-  #     - 32410:32410/udp
-  #     - 32412:32412/udp
-  #     - 32413:32413/udp
-  #     - 32414:32414/udp
-  #   networks:
-  #     - proxy
-  #     - default
-  #   volumes:
-  #     - ${DATA_DIR}/config/plex:/config
-  #     - ${DATA_DIR}/transcode:/transcode
-  #     - ${DATA_DIR}/content:/data
-  #   environment:
-  #     TZ: ${TZ}
-  #     VERSION: latest
-  #     PLEX_CLAIM: ${PLEX_CLAIM}
-  #     VIRTUAL_PORT: 32400
-  #     ADVERTISE_IP: http://plex.${DOMAIN}:32400
-  #   labels:
-  #     traefik.frontend.rule: "Host:plex.${DOMAIN}"
-  #     traefik.port: 32400
-  #      traefik.docker.network: proxy
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker
+    ports:
+      - 32400:32400/tcp
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 1900:1900/udp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    # networks:
+    #   - proxy
+    #   - default
+    volumes:
+      - ${DATA_DIR}/config/plex:/config
+      - ${DATA_DIR}/transcode:/transcode
+      - ${DATA_DIR}/content:/data
+    network_mode: host
+    environment:
+      TZ: ${TZ}
+      VERSION: latest
+      PLEX_CLAIM: ${PLEX_CLAIM}
+      VIRTUAL_PORT: 32400
+      ADVERTISE_IP: http://plex.${DOMAIN}:32400
+    labels:
+      traefik.frontend.rule: "Host:plex.${DOMAIN}"
+      traefik.port: 32400
+      traefik.docker.network: proxy
