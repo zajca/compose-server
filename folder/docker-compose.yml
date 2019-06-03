@@ -77,33 +77,52 @@ services:
   #     traefik.frontend.rule: "Host:rygel.${DOMAIN}"
   #     traefik.port: 6887
   #     traefik.docker.network: proxy
+  # plex:
+  #   container_name: plex
+  #   image: plexinc/pms-docker
+  #   ports:
+  #     - 32400:32400/tcp
+  #     - 3005:3005/tcp
+  #     - 8324:8324/tcp
+  #     - 32469:32469/tcp
+  #     - 1900:1900/udp
+  #     - 32410:32410/udp
+  #     - 32412:32412/udp
+  #     - 32413:32413/udp
+  #     - 32414:32414/udp
+  #   # networks:
+  #   #   - proxy
+  #   #   - default
+  #   volumes:
+  #     - ${DATA_DIR}/config/plex:/config
+  #     - ${DATA_DIR}/transcode:/transcode
+  #     - ${DATA_DIR}/content:/data
+  #   network_mode: host
+  #   environment:
+  #     TZ: ${TZ}
+  #     VERSION: latest
+  #     PLEX_CLAIM: ${PLEX_CLAIM}
+  #     VIRTUAL_PORT: 32400
+  #     ADVERTISE_IP: http://plex.${DOMAIN}:32400
+  #   labels:
+  #     traefik.frontend.rule: "Host:plex.${DOMAIN}"
+  #     traefik.port: 32400
+  #     traefik.docker.network: proxy
   plex:
+    image: linuxserver/plex
     container_name: plex
-    image: plexinc/pms-docker
-    ports:
-      - 32400:32400/tcp
-      - 3005:3005/tcp
-      - 8324:8324/tcp
-      - 32469:32469/tcp
-      - 1900:1900/udp
-      - 32410:32410/udp
-      - 32412:32412/udp
-      - 32413:32413/udp
-      - 32414:32414/udp
-    # networks:
-    #   - proxy
-    #   - default
-    volumes:
-      - ${DATA_DIR}/config/plex:/config
-      - ${DATA_DIR}/transcode:/transcode
-      - ${DATA_DIR}/content:/data
     network_mode: host
     environment:
+      # - PUID=1000
+      # - PGID=1000
+      VERSION: docker
       TZ: ${TZ}
-      VERSION: latest
-      PLEX_CLAIM: ${PLEX_CLAIM}
-      VIRTUAL_PORT: 32400
-      ADVERTISE_IP: http://plex.${DOMAIN}:32400
+    volumes:
+      - ${DATA_DIR}/config/plex:/config
+      - ${DATA_DIR}/content/tv:/data/tvshows
+      - ${DATA_DIR}/content/movies:/data/movies
+      - ${DATA_DIR}/content/music:/data/music
+      - ${DATA_DIR}/transcode:/transcode
     labels:
       traefik.frontend.rule: "Host:plex.${DOMAIN}"
       traefik.port: 32400

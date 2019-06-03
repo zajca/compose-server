@@ -20,6 +20,8 @@ services:
     volumes:
       - ${DATA_DIR}/config/nextcloud:/var/www/html
       - ${DATA_DIR}/content:/var/www/html/data
+      - /mnt/disk1:/mnt/disk1
+      - /mnt/disk2:/mnt/disk2
     environment:
       - POSTGRES_HOST=db
     links:
